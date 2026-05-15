@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <!-- Use .NET Standard 2.1 (which is what Unity needs to work) -->
+        <TargetFramework>netstandard2.1</TargetFramework>
+
+        <!-- Use the latest C# version to get the newest features -->
+        <LangVersion>latest</LangVersion>
+
+        <!-- Allow variables to be null, which may help you write better code -->
+        <Nullable>enable</Nullable>
+
+        <!-- Ensure you are building the mod for 64-bit, a requirement of MelonLoader -->
+        <PlatformTarget>x64</PlatformTarget>
+
+        <!-- Include information about what functions are called to make debugging easier. -->
+        <!-- Build the mod in "Release" configuration to disable this (recommended).-->
+        <DebugType Condition="'$(Configuration)'=='Debug'">embedded</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Allows us to use all of the functions Gorilla Tag offers. -->
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <!-- Allows us to create config files for users. This is a JSON package -->
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="HarmonyLib">
+            <HintPath>$(DependenciesPath)\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx">
+            <HintPath>$(DependenciesPath)\BepInEx.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="$(GameAssemblyPath)\*.dll"
+                   Exclude="$(GameAssemblyPath)\netstandard.dll">
+            <HintPath>%(Identity)</HintPath>
+            <Publicize>true</Publicize>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Classes\" />
+    </ItemGroup>
+</Project>
