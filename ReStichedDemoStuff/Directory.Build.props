@@ -4,7 +4,6 @@
         <!-- This points to where your game is located on your disk. -->
         <GamePath>/home/graze/.local/share/Steam/steamapps/common/Restitched Wardrobe Demo/</GamePath>
 
-        <!-- This points to where Gorilla Tag holds it's code -->
         <GameAssemblyPath>$(GamePath)\Restitched Wardrobe Demo_Data\Managed</GameAssemblyPath>
 
         <!-- This points to the references needed for BepInEx and MelonLoader -->
