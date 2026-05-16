@@ -35,7 +35,10 @@ public class Main : BaseUnityPlugin
             {
                 _greenscreen = FindFirstObjectByType<WardrobeOrnamentRenderer>().transform.GetChild(3).gameObject;
                 _greenscreen.transform.localPosition = _greenscreenStartPos;
-                _greenscreen.SetActive(true);
+            }
+            else
+            {
+                _greenscreen!.SetActive(_greenscreen!.transform.localPosition != _greenscreenStartPos);
             }
         }
         catch
@@ -89,7 +92,6 @@ public class Main : BaseUnityPlugin
             _greenscreen!.transform.localPosition = Vector3.Lerp(from, to, elapsed / GreenscreenAnimTime);
             yield return null;
         }
-
         _greenscreen!.transform.localPosition = to;
     }
 }
