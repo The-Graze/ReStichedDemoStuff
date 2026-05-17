@@ -10,6 +10,7 @@ using UI;
 using UI.Craftbook.CraftbookGeneration.FunctionButtons;
 using UI.WardrobeDemoSplash;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace ReStichedDemoStuff;
@@ -34,8 +35,9 @@ public class Main : BaseUnityPlugin
     private SoundEffectAsset? _curtainSound;
     private TrixelAudioSource? _curtainSoundSource;
 
-    private bool _goUp;
+    private bool _goUp, _debounce, _hide;
     private GameObject? _greenscreen, _customButtonGo, _stuffyStand;
+    private UiManager? _uiManager;
 
     private Main()
     {
@@ -47,6 +49,31 @@ public class Main : BaseUnityPlugin
     private void OnDisable()
     {
         _harmony.UnpatchSelf();
+        _goUp = true;
+        StartCoroutine(GreenScreenAnim());
+        Destroy(_customButtonGo);
+    }
+
+    private void FixedUpdate()
+    {
+        if (Keyboard.current.uKey.IsPressed() && Keyboard.current.iKey.IsPressed() && !_debounce)
+            ToggleWardrobeGUI();
+        else if (_debounce && (Keyboard.current.uKey.wasReleasedThisFrame || Keyboard.current.iKey.wasReleasedThisFrame) )
+            _debounce = false;
+    }
+
+    private void ToggleWardrobeGUI()
+    {
+        _debounce = true;
+        _hide = !_hide;
+        
+        wardrobeToolbarRoot?.SetActive(_hide);
+        
+        wardrobeToolbarRoot?.transform.parent.GetChild(0).GetChild(1).gameObject.SetActive(_hide);
+        wardrobeToolbarRoot?.transform.parent.GetChild(0).GetChild(2).gameObject.SetActive(_hide);
+
+        _uiManager?.transform.transform.GetChild(11).gameObject.SetActive(_hide);
+        _uiManager?.transform.transform.GetChild(12).gameObject.SetActive(_hide);
     }
 
     private void AddCustomButton()
@@ -148,6 +175,14 @@ public class Main : BaseUnityPlugin
         [HarmonyPatch(typeof(UiManager))]
         public abstract class UiManagerPatches
         {
+            [HarmonyPatch(nameof(UiManager.Awake))]
+            [HarmonyPostfix]
+            private static void AwakeUiPatch(UiManager __instance)
+            {
+                if (!_instance) return;
+                _instance._uiManager = __instance;
+            }
+            
             [HarmonyPatch(nameof(UiManager.InstantiateWardrobeUi))]
             [HarmonyPostfix]
             private static void InstantiateWardrobeUiPatch(UiManager __instance)
