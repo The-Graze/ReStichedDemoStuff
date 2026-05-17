@@ -56,6 +56,8 @@ public class Main : BaseUnityPlugin
             _debounce = false;
     }
 
+    private void OnDestroy() => OnDisable();
+
     private void OnDisable()
     {
         _harmony.UnpatchSelf();
