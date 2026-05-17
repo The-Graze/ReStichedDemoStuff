@@ -15,4 +15,4 @@ EULA skip
 
 # Early Emotes
 
-https://github.com/user-attachments/assets/bf2820ce-56ca-419a-b157-b6a9732eb32c
+https://github.com/user-attachments/assets/f2ef1dca-f587-40ea-a121-285f96a48b35
