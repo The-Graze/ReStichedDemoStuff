@@ -18,10 +18,8 @@ namespace ReStichedDemoStuff;
 [BepInPlugin(Constants.Name, Constants.Guid, Constants.Version)]
 public class Main : BaseUnityPlugin
 {
-    private static Main? _instance;
-    private readonly Harmony _harmony;
-
     private const float GreenscreenAnimTime = .8f;
+    private static Main? _instance;
 
     public GameObject? wardrobeToolbarRoot;
 
@@ -30,6 +28,8 @@ public class Main : BaseUnityPlugin
         _greenscreenStartPos = new(-1.94f, -188.9583f, 73.44f),
         _standStartPos = Vector3.zero,
         _standTargetPos = new(0, -10, 0);
+
+    private readonly Harmony _harmony;
 
 
     private SoundEffectAsset? _curtainSound;
@@ -46,6 +46,16 @@ public class Main : BaseUnityPlugin
         _instance = this;
     }
 
+    private void FixedUpdate()
+    {
+        if (!_customButtonGo) return;
+
+        if (Keyboard.current.uKey.IsPressed() && Keyboard.current.iKey.IsPressed() && !_debounce)
+            ToggleWardrobeGUI();
+        else if (_debounce && (Keyboard.current.uKey.wasReleasedThisFrame || Keyboard.current.iKey.wasReleasedThisFrame))
+            _debounce = false;
+    }
+
     private void OnDisable()
     {
         _harmony.UnpatchSelf();
@@ -54,21 +64,13 @@ public class Main : BaseUnityPlugin
         Destroy(_customButtonGo);
     }
 
-    private void FixedUpdate()
-    {
-        if (Keyboard.current.uKey.IsPressed() && Keyboard.current.iKey.IsPressed() && !_debounce)
-            ToggleWardrobeGUI();
-        else if (_debounce && (Keyboard.current.uKey.wasReleasedThisFrame || Keyboard.current.iKey.wasReleasedThisFrame) )
-            _debounce = false;
-    }
-
     private void ToggleWardrobeGUI()
     {
         _debounce = true;
         _hide = !_hide;
-        
+
         wardrobeToolbarRoot?.SetActive(_hide);
-        
+
         wardrobeToolbarRoot?.transform.parent.GetChild(0).GetChild(1).gameObject.SetActive(_hide);
         wardrobeToolbarRoot?.transform.parent.GetChild(0).GetChild(2).gameObject.SetActive(_hide);
 
@@ -119,10 +121,12 @@ public class Main : BaseUnityPlugin
         while (elapsed < GreenscreenAnimTime)
         {
             elapsed += Time.deltaTime;
-            _greenscreen!.transform.localPosition = Vector3.Lerp(greenscreenFrom, greenscreenTo, elapsed / GreenscreenAnimTime);
+            _greenscreen!.transform.localPosition =
+                Vector3.Lerp(greenscreenFrom, greenscreenTo, elapsed / GreenscreenAnimTime);
             _stuffyStand!.transform.localPosition = Vector3.Lerp(standFrom, standTo, elapsed / GreenscreenAnimTime);
             yield return null;
         }
+
         _greenscreen!.transform.localPosition = greenscreenTo;
         _greenscreen!.SetActive(_greenscreen!.transform.localPosition != _greenscreenStartPos);
     }
@@ -137,17 +141,17 @@ public class Main : BaseUnityPlugin
             [HarmonyPostfix]
             private static void WardrobeSplashAwakePatch(WardrobeSplashController __instance)
             {
-                if(!_instance) return;
-                
-                if(!_instance._curtainSound)
+                if (!_instance) return;
+
+                if (!_instance._curtainSound)
                     _instance._curtainSound = __instance.curtainOpenSound;
-                
-                if(_instance._curtainSoundSource) return;
+
+                if (_instance._curtainSoundSource) return;
                 _instance._curtainSoundSource = Instantiate(__instance.audioSource);
                 _instance._curtainSoundSource.transform.position = __instance.audioSource.transform.position;
                 _instance._curtainSoundSource.transform.rotation = __instance.audioSource.transform.rotation;
             }
-            
+
             [HarmonyPatch(nameof(WardrobeSplashController.ShowEULAPopup))]
             [HarmonyPrefix]
             private static bool EULAPatch(WardrobeSplashController __instance)
@@ -165,10 +169,11 @@ public class Main : BaseUnityPlugin
             [HarmonyPostfix]
             private static void WardrobeSetupPatch(WardrobeManager __instance)
             {
-                if(!_instance) return;
+                if (!_instance) return;
                 _instance._greenscreen = __instance.transform.GetChild(3).gameObject;
                 _instance._greenscreen.transform.localPosition = _instance._greenscreenStartPos;
-                _instance._stuffyStand = _instance._greenscreen.transform.parent.GetChild(1).GetChild(3).GetChild(0).gameObject;
+                _instance._stuffyStand = _instance._greenscreen.transform.parent.GetChild(1).GetChild(3).GetChild(0)
+                    .gameObject;
             }
         }
 
@@ -182,12 +187,12 @@ public class Main : BaseUnityPlugin
                 if (!_instance) return;
                 _instance._uiManager = __instance;
             }
-            
+
             [HarmonyPatch(nameof(UiManager.InstantiateWardrobeUi))]
             [HarmonyPostfix]
             private static void InstantiateWardrobeUiPatch(UiManager __instance)
             {
-                if(!_instance) return;
+                if (!_instance) return;
                 _instance.wardrobeToolbarRoot = __instance.WardrobeState.WardrobeHud?.transform.GetChild(2).gameObject;
                 _instance.AddCustomButton();
             }
