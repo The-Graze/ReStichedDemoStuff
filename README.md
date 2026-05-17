@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/f3e28a2e-7c7c-4276-b3bf-0f5819563130
 https://discord.gg/BHmprCb8UK
 
 EULA skip
@@ -10,3 +12,7 @@ EULA skip
 # UI Toggle
 
 <img width="800" height="450" alt="2026-05-1703-33-31-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/4c285f89-de09-4702-ae8a-68f8a028e1fa" />
+
+# Early Emotes
+
+https://github.com/user-attachments/assets/bf2820ce-56ca-419a-b157-b6a9732eb32c
