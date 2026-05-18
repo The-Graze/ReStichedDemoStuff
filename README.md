@@ -1,5 +1,5 @@
 
-https://github.com/user-attachments/assets/f3e28a2e-7c7c-4276-b3bf-0f5819563130
+
 https://discord.gg/BHmprCb8UK
 
 EULA skip
