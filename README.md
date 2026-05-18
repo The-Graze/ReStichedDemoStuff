@@ -16,3 +16,8 @@ EULA skip
 # Early Emotes
 
 https://github.com/user-attachments/assets/f2ef1dca-f587-40ea-a121-285f96a48b35
+
+
+# WIP VR Support
+
+<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/f675fb94-c2c5-4c24-86c2-656052693a71" />
