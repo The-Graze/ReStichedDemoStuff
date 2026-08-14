@@ -1,6 +1,5 @@
 
 
-https://discord.gg/BHmprCb8UK
 
 EULA skip
 
